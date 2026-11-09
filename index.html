@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asignatura de Bachillerato - Sitio Docente</title>
+
+    <!-- ====================================================================
+         BLOQUE 1: ESTILOS CSS (DENTRO DE LA ETIQUETA <style>)
+         ==================================================================== -->
+    <style>
+        /* RESET BÁSICO Y VARIABLES DE COLOR */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-principal: #1e3a8a; /* Azul académico */
+            --color-secundario: #f1f5f9;
+            --color-texto: #1e293b;
+            --color-blanco: #ffffff;
+            --color-accent: #2563eb;
+            --color-youtube: #ff0000;
+            --color-mastodon: #6364ff;
+            --fuente-base: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            font-family: var(--fuente-base);
+            color: var(--color-texto);
+            background-color: var(--color-secundario);
+            background-image: url('fondo.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            line-height: 1.6;
+        }
+
+        /* ENCABEZADO Y NAVEGACIÓN CON MENÚ HAMBURGUESA */
+        .header {
+            background-color: var(--color-principal);
+            color: var(--color-blanco);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+        }
+
+        /* Botón de Menú Hamburguesa */
+        .hamburger {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            width: 30px;
+            height: 25px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            z-index: 1000;
+        }
+
+        .hamburger span {
+            width: 30px;
+            height: 3px;
+            background: var(--color-blanco);
+            border-radius: 2px;
+            transition: all 0.3s linear;
+        }
+
+        /* Desplegable del Menú */
+        .nav-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: var(--color-principal);
+            width: 250px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            z-index: 999;
+        }
+
+        .nav-menu.active {
+            display: block;
+        }
+
+        .nav-menu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .nav-menu li {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-menu a {
+            color: var(--color-blanco);
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.95rem;
+            display: block;
+            padding: 0.8rem 1.2rem;
+        }
+
+        .nav-menu a:hover {
+            background-color: var(--color-accent);
+        }
+
+        /* CONTENIDO PRINCIPAL Y TARJETAS */
+        .main-content {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .card {
+            background-color: var(--color-blanco);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+        }
+
+        .card h2 {
+            margin-bottom: 1rem;
+            color: var(--color-principal);
+            border-bottom: 2px solid var(--color-secundario);
+            padding-bottom: 0.4rem;
+        }
+
+        /* TARJETA DE PERFIL DEL PROFESOR Y CALENDARIO */
+        .perfil-flex-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .perfil-container {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            flex: 1;
+            min-width: 280px;
+        }
+
+        .foto-perfil {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--color-principal);
+            background-color: #cbd5e1;
+        }
+
+        .perfil-datos h3 {
+            color: var(--color-principal);
+            margin-bottom: 0.3rem;
+        }
+
+        .perfil-datos p {
+            font-size: 0.95rem;
+            margin-bottom: 0.2rem;
+        }
+
+        /* CONTENEDOR FLEXIBLE PARA PERFIL DESPLEGABLE E IMAGEN/VIDEO */
+        .perfil-desplegable-container {
+            display: flex;
+            gap: 1.5rem;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+            width: 100%;
+        }
+
+        .imagen-perfil-desplegable {
+            width: 100%;
+            max-width: 400px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            display: block;
+            flex: 1;
+            min-width: 280px;
+        }
+
+        /* CONTENEDOR OPTIMIZADO PARA EL REPRODUCTOR DE VIDEO RESPONSIVO */
+        .video-perfil-wrapper {
+            flex: 1;
+            min-width: 280px;
+            max-width: 400px;
+            width: 100%;
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            background-color: #000;
+        }
+
+        /* Relación de aspecto adaptable para video en PC y teléfonos */
+        .video-perfil-wrapper video {
+            width: 100%;
+            height: auto;
+            max-height: 350px;
+            display: block;
+            object-fit: cover;
+        }
+
+        /* ESTILOS DEL MINI CALENDARIO DINÁMICO CON HORA */
+        .calendario-widget {
+            background-color: var(--color-secundario);
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 0.8rem;
+            width: 240px;
+            text-align: center;
+            font-size: 0.85rem;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .calendario-header {
+            font-weight: bold;
+            color: var(--color-principal);
+            margin-bottom: 0.3rem;
+            font-size: 0.9rem;
+            border-bottom: 1px solid #cbd5e1;
+            padding-bottom: 0.3rem;
+        }
+
+        .reloj-widget {
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: var(--color-accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .calendario-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+            text-align: center;
+        }
+
+        .calendario-grid span {
+            padding: 0.2rem 0;
+        }
+
+        .calendario-grid .dia-sem {
+            font-weight: bold;
+            color: #64748b;
+            font-size: 0.75rem;
+        }
+
+        .calendario-grid .dia {
+            background-color: var(--color-blanco);
+            border-radius: 3px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .calendario-grid .dia.activo {
+            background-color: var(--color-principal);
+            color: var(--color-blanco);
+            font-weight: bold;
+        }
+
+        .calendario-grid .dia.vacio {
+            background-color: transparent;
+            border: none;
+        }
+
+        /* TABLAS (CALIFICACIONES Y TEMARIO) */
+        .tabla-contenedor {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 0.5rem;
+        }
+
+        table th, table td {
+            border: 1px solid #cbd5e1;
+            padding: 0.75rem;
+            text-align: left;
+        }
+
+        table th {
+            background-color: var(--color-principal);
+            color: var(--color-blanco);
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        /* GRILLA DE RECURSOS */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+        }
+
+        .grid-item {
+            background-color: var(--color-secundario);
+            padding: 1rem;
+            border-radius: 6px;
+            border-left: 4px solid var(--color-accent);
+        }
+
+        /* Estilo para los hipervínculos en los títulos de los semestres */
+        .grid-item h3 a {
+            color: var(--color-principal);
+            text-decoration: none;
+        }
+
+        .grid-item h3 a:hover {
+            text-decoration: underline;
+        }
+
+        /* FORMULARIO Y BOTONES DE CONTACTO */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.3rem;
+            font-weight: bold;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 0.6rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-family: inherit;
+        }
+
+        .botones-grupo {
+            display: flex;
+            gap: 0.8rem;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: bold;
+            color: var(--color-blanco);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+        }
+
+        .btn-submit {
+            background-color: var(--color-principal);
+        }
+
+        .btn-youtube {
+            background-color: var(--color-youtube);
+        }
+
+        .btn-mastodon {
+            background-color: var(--color-mastodon);
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .mensaje {
+            margin-top: 1rem;
+            font-weight: bold;
+        }
+
+        /* PIE DE PÁGINA */
+        .footer {
+            text-align: center;
+            padding: 1rem;
+            background-color: #0f172a;
+            color: var(--color-blanco);
+            margin-top: 2rem;
+            font-size: 0.9rem;
+        }
+
+        /* ====================================================================
+         MEDIA QUERIES: ADAPTATIVIDAD PARA TELÉFONOS Y PC
+         ==================================================================== -->
+        
+        /* Ajustes específicos para teléfonos (pantallas de 768px o menos) */
+        @media screen and (max-width: 768px) {
+            .header {
+                padding: 0.8rem 1rem;
+            }
+
+            .header h1 {
+                font-size: 1.2rem;
+            }
+
+            .nav-menu {
+                width: 100%; /* El menú desplegable abarca todo el ancho en móviles */
+            }
+
+            .perfil-flex-wrapper {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .perfil-container {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .perfil-desplegable-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .calendario-widget {
+                width: 100%; /* Calendario adaptable en teléfonos */
+                max-width: 300px;
+                margin-top: 1rem;
+            }
+
+            .botones-grupo {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn {
+                width: 100%; /* Botones de ancho completo en móvil */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ====================================================================
+         BLOQUE 2: ESTRUCTURA HTML5
+         ==================================================================== -->
+    
+    <!-- ENCABEZADO Y NAVEGACIÓN -->
+    <header class="header">
+        <h1>Cultura Digital - Bachillerato</h1>
+        <button class="hamburger" id="hamburgerBtn" aria-label="Abrir menú de navegación">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <nav class="nav-menu" id="navMenu">
+            <ul>
+                <li><a href="#profesor">Profesor</a></li>
+                <li><a href="#asignatura">Asignatura</a></li>
+                <li><a href="#contenido">Contenido</a></li>
+                <li><a href="#calificaciones">Calificaciones</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+                <li><a href="#sitios-interes">Sitios de Interés</a></li>
+                <li><a href="#portal-escolar">Portal Escolar</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="main-content">
+
+        <!-- SECCIÓN 1: PERFIL DEL PROFESOR -->
+        <section id="profesor" class="card">
+            <h2 style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                <span>Perfil del Docente</span>
+                <button type="button" id="btnTogglePerfil" class="btn btn-submit" onclick="toggleImagenPerfil()" style="font-size: 0.85rem; padding: 0.4rem 0.8rem;">
+                    Mostrar Perfil
+                </button>
+            </h2>
+            <div class="perfil-flex-wrapper">
+                <div class="perfil-container">
+                    <!-- Foto de perfil de muestra SVG integrada -->
+                    <img class="foto-perfil" src="logo.png" alt="Foto de perfil del Profesor">
+                    <div class="perfil-datos">
+                        <h3>Prof. Oscar Cristóbal Colunga</h3>
+                        <p><strong>Materia:</strong> Cultura Digital</p>
+                        <p><strong>Correo Institucional:</strong> docente@bachillerato.edu</p>
+                        <p><strong>Horario de Tutorías:</strong> Lunes y Miércoles de 12:00 a 14:00 hrs</p>
+                        <p><em>"Hagamos de la apropiación y el uso de la tecnología una experiencia enriquecedora para el aprendizaje integral a lo largo de la vida."</em></p>
+                    </div>
+                </div>
+
+                <!-- WIDGET DE CALENDARIO DINÁMICO Y RELOJ EN EL LADO DERECHO -->
+                <div class="calendario-widget">
+                    <div class="calendario-header" id="mesAnioHeader">Cargando...</div>
+                    <div class="reloj-widget" id="relojActual">00:00:00</div>
+                    <div class="calendario-grid" id="calendarioGrid">
+                        <!-- Se llena dinámicamente con JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTENEDOR DESPLEGABLE DE PERFIL (IMAGEN Y VIDEO) -->
+            <div id="imgPerfilDesplegable" class="perfil-desplegable-container" style="display: none;">
+                <!-- IMAGEN DESPLEGABLE DE PERFIL -->
+                <img class="imagen-perfil-desplegable" src="perfil.jpeg" alt="Perfil docente completo">
+
+                <!-- REPRODUCTOR DE VIDEO RESPONSIVO (OPTIMIZADO PARA TELÉFONOS Y PC) -->
+                <!-- INICIO: Aquí debe ir incrustado el recurso de video -->
+                <div class="video-perfil-wrapper">
+                    <video controls preload="metadata" poster="logo.png">
+                        <!-- INSERTA AQUÍ EL SRC DE TU VIDEO (ej. video.mp4 o la ruta de tu archivo multimedia) -->
+                        <source src="video.webm" type="video/webm">
+                        Tu navegador no soporta la reproducción de video.
+                    </video>
+                </div>
+                <!-- FIN: Ubicación del recurso de video incrustado -->
+            </div>
+        </section>
+
+        <!-- SECCIÓN 2: INFORMACIÓN DE LA ASIGNATURA -->
+        <section id="asignatura" class="card">
+            <h2 style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                <span>Información de la Asignatura</span>
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                    <button type="button" id="btnAudioPresentacion" class="btn btn-submit" onclick="toggleAudioPresentacion()" style="font-size: 0.85rem; padding: 0.4rem 0.8rem;">
+                        🔊 Escuchar Presentación
+                    </button>
+                    <button type="button" id="btnToggleTexto" class="btn btn-submit" onclick="toggleTextoPresentacion()" style="font-size: 0.85rem; padding: 0.4rem 0.8rem;">
+                        📄 Leer Presentación
+                    </button>
+                </div>
+            </h2>
+            <audio id="audioPresentacion" src="about.mp3"></audio>
+            <p id="textoPresentacion" style="display: none; text-align: justify; margin-top: 1rem;"><strong>Presentación:</strong> ¡Qué tal, te saluda tu facilitador de aprendizaje! ¡BIENVENIDO a Cultura Digital! En este sitio web podrás consultar los propósitos y contenidos formativos de cada semestre de Cultura Digital, así como las orientaciones didácticas y criterios para el logro de tus aprendizajes. Esta asignatura busca distanciarse de una visión que solo aborda la transición de tecnologías obsoletas a otras más recientes e innovadoras, tal como suele entenderse la modernización de la tecnología. 
+En consecuencia, la asignatura de Cultura Digital busca favorecer un aprendizaje que trascienda la instrumentalización de las Tecnologías de la Información, Comunicación, Conocimiento y Aprendizajes Digitales (TICCAD) donde no te limites a utilizar herramientas nuevas e innovadoras para producir resultados o consultar información. 
+Más bien, se proyecta la consolidación de una mirada crítica y reflexiva por parte del estudiantado. Además de la apertura de un nuevo universo ético de oportunidades formativas, sociales, laborales y profesionales, que te posibilitarán alcanzar el crecimiento y bienestar individual y colectivo, bajo una mirada que conjugue los saberes adquiridos en otras áreas del conocimiento.
+Estas consideraciones están alineadas principalmente con planteamientos centrales de la NEM (Nueva Escuela Mexicana) relativos a: El respeto a la dignidad humana, la responsabilidad ciudadana y social, la participación en la transformación de la sociedad y el respeto por la naturaleza y cuidado del medio ambiente.
+Esto significa que la asignatura de Cultura Digital está orientada a la promoción de la capacidad de reflexionar y pensar de forma crítica sobre el impacto de las tecnologías digitales en ti mismo, así como en tu comunidad y en el medio ambiente, desde una perspectiva de las desigualdades de acceso por género y condición socioeconómica. Además, busca coadyuvar a resolver los problemas de tu contexto inmediato mediante las herramientas de las tecnologías digitales.</p>
+            <br>
+            <h3>Criterios de Evaluación</h3>
+            <ul>
+                <li><strong>Exámenes Parciales:</strong> 20%</li>
+                <li><strong>Trabajo en Clase:</strong> 40%</li>
+                <li><strong>Portafolio de Evidencias:</strong> 20%</li>
+                <li><strong>Proyecto Final:</strong> 20%</li>
+            </ul>
+        </section>
+
+        <!-- SECCIÓN 3: CONTENIDO Y TEMARIO -->
+        <section id="contenido" class="card">
+            <h2>Temario y Recursos</h2>
+            <div class="grid">
+                <article class="grid-item">
+                    <h3><a href="semestre1.html" target="_blank">Semestre 1: Ciudadanía Digital</a></h3>
+                    <p style="text-align: justify;">Conocerás y utilizarás de manera crítica y responsable el ciberespacio y los distintos recursos digitales, apegándote a su marco normativo para ejercer una ciudadanía digital, acceder al conocimiento y resolver situaciones, fenómenos o problemas de tu contexto.</p>
+                </article>
+                <article class="grid-item">
+                    <h3><a href="semestre2.html" target="_blank">Semestre 2: Aprendizaje Individual y Colaborativo</a></h3>
+                    <p style="text-align: justify;">Interactuarás con las TICCAD para potenciar tu aprendizaje autónomo y colaborativo, de una forma creativa e innovadora, de acuerdo con las características y necesidades de tu contexto.</p>
+                </article>
+                <article class="grid-item">
+                    <h3><a href="semestre6.html" target="_blank">Semestre 6: Uso y Difusión del Conocimiento</a></h3>
+                    <p style="text-align: justify;">Interactuarás con las TICCAD para ampliar tu conocimiento y vincularte con el entorno de una manera crítica, creativa e innovadora.</p>
+                </article>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 4: TABLA DE CALIFICACIONES -->
+        <section id="calificaciones" class="card">
+            <h2>Calificaciones</h2>
+            <div class="tabla-contenedor">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Semestre</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Primero</td>
+                            <td><a href="ruta/tu-documento-primero.pdf" target="_blank">No disponible</a></td>
+                        </tr>
+                        <tr>
+                            <td>Segundo</td>
+                            <td><a href="ruta/tu-documento-segundo.pdf" target="_blank">No disponible</a></td>
+                        </tr>
+                        <tr>
+                            <td>Sexto</td>
+                            <td><a href="https://docs.google.com/spreadsheets/d/1qjdbF1bLmZkKR6XFWer779CbAFPHGBwAdRNQtobdRxI/edit?usp=sharing" target="_blank">Disponible</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 5: CONTACTO -->
+        <section id="contacto" class="card">
+            <h2>Contacto y Redes del Profesor</h2>
+            <!-- Formulario con acción configurada a la URL destino -->
+            <form id="formularioContacto" action="https://formspree.io/f/xyekgqdr" method="POST">
+                <div class="form-group">
+                    <label for="nombre">Nombre completo:</label>
+                    <input type="text" id="nombre" name="nombre" required placeholder="Tu nombre completo">
+                </div>
+                <div class="form-group">
+                    <label for="correo">Correo electrónico:</label>
+                    <input type="email" id="correo" name="correo" required placeholder="tu@correo.com">
+                </div>
+                <div class="form-group">
+                    <label for="mensaje">Mensaje o duda:</label>
+                    <textarea id="mensaje" name="mensaje" rows="4" required placeholder="Escribe tu mensaje o consulta aquí..."></textarea>
+                </div>
+
+                <!-- GRUPO DE BOTONES: ENVIAR + REDES SOCIALES -->
+                <div class="botones-grupo">
+                    <button type="submit" class="btn btn-submit">Enviar mensaje</button>
+                    
+                    <!-- Botón Rojo de YouTube -->
+                    <a href="https://youtube.com/@algoritmomaestrotv?si=0p2lDMwAlg3cOqcy" target="_blank" class="btn btn-youtube">
+                        ▶ YouTube
+                    </a>
+
+                    <!-- Botón Morado de Mastodon -->
+                    <a href="https://mastodon.social/@Profe_Colunga" target="_blank" class="btn btn-mastodon">
+                        🐘 Mastodon
+                    </a>
+                </div>
+            </form>
+            <p id="mensajeFormulario" class="mensaje"></p>
+        </section>
+
+    </main>
+
+    <!-- PIE DE PÁGINA -->
+    <footer class="footer">
+        <p>&copy; This work is licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International</a><img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/nc.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/sa.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"></p>
+    </footer>
+
+    <!-- ====================================================================
+         BLOQUE 3: LÓGICA JAVASCRIPT (DENTRO DE LA ETIQUETA <script>)
+         ==================================================================== -->
+    <script>
+        // Función para mostrar/ocultar la imagen y el video del perfil docente
+        function toggleImagenPerfil() {
+            const img = document.getElementById("imgPerfilDesplegable");
+            const boton = document.getElementById("btnTogglePerfil");
+
+            if (img.style.display === "none" || img.style.display === "") {
+                img.style.display = "flex";
+                boton.textContent = "Ocultar Perfil";
+            } else {
+                img.style.display = "none";
+                boton.textContent = "Mostrar Perfil";
+            }
+        }
+
+        // Función para alternar entre reproducir y detener el audio con un solo botón
+        function toggleAudioPresentacion() {
+            const audio = document.getElementById("audioPresentacion");
+            const boton = document.getElementById("btnAudioPresentacion");
+
+            if (audio.paused) {
+                audio.play();
+                boton.innerHTML = "⏸ Pausar Presentación";
+            } else {
+                audio.pause();
+                audio.currentTime = 0; // Reinicia el audio al inicio al detenerlo
+                boton.innerHTML = "🔊 Escuchar Presentación";
+            }
+        }
+
+        // Evento para asegurar que si el audio termina por sí solo, el botón regrese a su estado original
+        document.addEventListener("DOMContentLoaded", function () {
+            const audio = document.getElementById("audioPresentacion");
+            const boton = document.getElementById("btnAudioPresentacion");
+
+            audio.addEventListener("ended", function () {
+                boton.innerHTML = "🔊 Escuchar Presentación";
+            });
+        });
+
+        function toggleTextoPresentacion() {
+            const texto = document.getElementById("textoPresentacion");
+            const boton = document.getElementById("btnToggleTexto");
+            if (texto.style.display === "none") {
+                texto.style.display = "block";
+                boton.innerHTML = "📄 Ocultar Presentación";
+            } else {
+                texto.style.display = "none";
+                boton.innerHTML = "📄 Leer Presentación";
+            }
+        }
+
+        // Función para generar dinámicamente el calendario y actualizar el reloj
+        function iniciarCalendarioReloj() {
+            const ahora = new Date();
+            
+            // 1. Reloj en tiempo real
+            const horas = String(ahora.getHours()).padStart(2, '0');
+            const minutos = String(ahora.getMinutes()).padStart(2, '0');
+            const segundos = String(ahora.getSeconds()).padStart(2, '0');
+            document.getElementById("relojActual").textContent = `${horas}:${minutos}:${segundos}`;
+
+            // 2. Autoprogramación del Calendario según el mes y año en curso
+            const anio = ahora.getFullYear();
+            const mes = ahora.getMonth(); // 0-11
+            const diaActual = ahora.getDate();
+
+            const nombresMeses = [
+                "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", 
+                "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+            ];
+
+            document.getElementById("mesAnioHeader").textContent = `${nombresMeses[mes]} ${anio}`;
+
+            const grid = document.getElementById("calendarioGrid");
+            grid.innerHTML = `
+                <span class="dia-sem">Lu</span>
+                <span class="dia-sem">Ma</span>
+                <span class="dia-sem">Mi</span>
+                <span class="dia-sem">Ju</span>
+                <span class="dia-sem">Vi</span>
+                <span class="dia-sem">Sá</span>
+                <span class="dia-sem">Do</span>
+            `;
+
+            let primerDiaIndex = new Date(anio, mes, 1).getDay();
+            primerDiaIndex = (primerDiaIndex === 0) ? 6 : primerDiaIndex - 1;
+
+            const totalDiasMes = new Date(anio, mes + 1, 0).getDate();
+
+            for (let i = 0; i < primerDiaIndex; i++) {
+                const spanVacio = document.createElement("span");
+                spanVacio.className = "dia vacio";
+                grid.appendChild(spanVacio);
+            }
+
+            for (let dia = 1; dia <= totalDiasMes; dia++) {
+                const spanDia = document.createElement("span");
+                spanDia.className = "dia";
+                spanDia.textContent = dia;
+                if (dia === diaActual) {
+                    spanDia.classList.add("activo");
+                }
+                grid.appendChild(spanDia);
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            iniciarCalendarioReloj();
+            setInterval(iniciarCalendarioReloj, 1000);
+
+            const hamburgerBtn = document.getElementById("hamburgerBtn");
+            const navMenu = document.getElementById("navMenu");
+
+            hamburgerBtn.addEventListener("click", function () {
+                navMenu.classList.toggle("active");
+            });
+
+            const navLinks = navMenu.querySelectorAll("a");
+            navLinks.forEach(function (link) {
+                link.addEventListener("click", function () {
+                    navMenu.classList.remove("active");
+                });
+            });
+
+            const formularioContacto = document.getElementById("formularioContacto");
+            const campoNombre = document.getElementById("nombre");
+            const campoCorreo = document.getElementById("correo");
+            const campoMensaje = document.getElementById("mensaje");
+            const mensajeFormulario = document.getElementById("mensajeFormulario");
+
+            formularioContacto.addEventListener("submit", function (evento) {
+                const valorNombre = campoNombre.value.trim();
+                const valorCorreo = campoCorreo.value.trim();
+                const valorMensaje = campoMensaje.value.trim();
+
+                if (valorNombre === "" || valorCorreo === "" || valorMensaje === "") {
+                    evento.preventDefault();
+                    mensajeFormulario.textContent = "Por favor, completa todos los campos del formulario.";
+                    mensajeFormulario.style.color = "#dc3545";
+                } else {
+                    mensajeFormulario.textContent = "Enviando mensaje al profesor...";
+                    mensajeFormulario.style.color = "#1e3a8a";
+                }
+            });
+        });
+    </script>
+</body>
+</html>
